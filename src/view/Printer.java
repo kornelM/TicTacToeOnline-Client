@@ -89,9 +89,9 @@ public class Printer {
 
     public static void printInfo(Game game) {
         if (game.getWinner().getNumOfPlayer() == 1)
-            System.out.println(BLINK + "Player 1 has won" + ANSI_RESET);
+            System.out.println(BLINK + "Player 1 has won...you looser" + ANSI_RESET);
         else if (game.getWinner().getNumOfPlayer() == 2)
-            System.out.println(BLINK + "Player 2 has won" + ANSI_RESET);
+            System.out.println(BLINK + "You won!" + ANSI_RESET);
         else
             System.out.println(BLINK + "Draw! Nobody won :(" + ANSI_RESET);
     }
@@ -151,9 +151,9 @@ public class Printer {
 
     public void printInfo(int playerId) {
         if (playerId == 1)
-            System.out.println(BLINK + "Player 1 has won" + ANSI_RESET);
+            System.out.println(BLINK + "Player 1 has won...you looser" + ANSI_RESET);
         else if (playerId== 2)
-            System.out.println(BLINK + "Player 2 has won" + ANSI_RESET);
+            System.out.println(BLINK + "You won!" + ANSI_RESET);
         else
             System.out.println(BLINK + "Draw! Nobody won :(" + ANSI_RESET);
     }

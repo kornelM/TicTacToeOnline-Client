@@ -40,101 +40,56 @@ public class Main {
 
             BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
-            boolean myTurn = true;
-            int tmpInt;
-
-
             System.out.println("Server says: " + in.readLine());
             welcomeMessage();
             myPrinter.printSampleGameBoardWithNumbers(3, 3);
 
-
-            String previousAnswerFromServerAsAString = "";
             String answerFromServerAsAString;
 
-            while (true) {
+            int moveOfAPlayer = 1;
+            boolean endOfGame = false;
+
+            while (!endOfGame) {
                 answerFromServerAsAString = in.readLine();
+                try {
+                    if (answerFromServerAsAString.length() == 1)
+                        moveOfAPlayer = 0;
+                } catch (NullPointerException e) {
+                } //no need to do whatever with this exception
+
+                switch (moveOfAPlayer) {
+
+                    case 0: //draw or win
+                        System.out.println("End of the game!");
+                        try {
+                            myPrinter.printInfo(Integer.parseInt(answerFromServerAsAString));
+                        } catch (NumberFormatException e) {
+                        } //no need to do whatever with this exception
+                        client.close();
+                        endOfGame = true;
+                        break;
 
 
-                if  (answerFromServerAsAString != "1" || answerFromServerAsAString != "2" || answerFromServerAsAString != "3")
-                {
-                    if (answerFromServerAsAString.equals(previousAnswerFromServerAsAString)) {
+                    case 1: //player 2
+
+                        myPrinter.printTable(parseStringToIntTable(answerFromServerAsAString));
                         myPrinter.printMessageToPlyerOnConsole(2);
-                        tmpInt = scanner.nextInt();             //scanning for answer
-                        out.write(tmpInt);              //push it to server
-                    }
-
-                    else {
-                        myPrinter.printTable(parseStringToIntTable(answerFromServerAsAString)); //prints table
-
-                        if (myTurn) {
-                            myPrinter.printMessageToPlyerOnConsole(2);          //prints Player O:
-                            out.write(scanner.nextInt());
-                            myTurn = false;
-                            previousAnswerFromServerAsAString  = answerFromServerAsAString;
-                        }
-
-                        else {
-                            answerFromServerAsAString = in.readLine();
-                            myPrinter.printTable(parseStringToIntTable(answerFromServerAsAString));
-                            myTurn = true;
-                            previousAnswerFromServerAsAString=answerFromServerAsAString;
-                            myPrinter.printMessageToPlyerOnConsole(2);
-                            out.write(scanner.nextInt());
+                        out.write(scanner.nextInt());
+                        moveOfAPlayer = 2;
+                        break;
 
 
-                        }
-                    }
+                    case 2: //player 1
+                        myPrinter.printTable(parseStringToIntTable(answerFromServerAsAString));
+                        moveOfAPlayer = 1;
+                        break;
                 }
-                else  {
-                    System.out.println("End of game!");
-                    client.close();
-                }
-//                    if (answerFromServerAsAString.equals(previousAnswerFromServerAsAString)) {
-//                        myPrinter.printMessageToPlyerOnConsole(2);
-//                        tmpInt = scanner.nextInt();             //scanning for answer
-//                        out.write(tmpInt);              //push it to server
-//                    }
-
-//                    else if (answerFromServerAsAString == "1" || answerFromServerAsAString == "2" || answerFromServerAsAString == "3"){
-//                        answerFromServerAsAString = in.readLine();
-//                        System.out.println("End of game!");
-//                        myPrinter.printInfo(in.read());
-//                        client.close();
-//                    }
-
-//                    else
-//                        {
-//                        myPrinter.printTable(parseStringToIntTable(answerFromServerAsAString)); //prints table
-//                        if (myTurn) {
-//                            myPrinter.printMessageToPlyerOnConsole(2);          //prints Player O:
-//                            tmpInt = scanner.nextInt();
-//                            out.write(tmpInt);
-//                            myTurn = false;
-//                            previousAnswerFromServerAsAString = answerFromServerAsAString;
-//                            answerFromServerAsAString = in.readLine();
-//                            myPrinter.printTable(parseStringToIntTable(answerFromServerAsAString));
-//                        }
-//                        else
-//                        {
-//                            answerFromServerAsAString = in.readLine();
-//                            myPrinter.printTable(parseStringToIntTable(answerFromServerAsAString));
-//                            myTurn = true;
-//                            previousAnswerFromServerAsAString = answerFromServerAsAString;
-//                            myPrinter.printTable(parseStringToIntTable(answerFromServerAsAString));
-//                        }
-//                    }
             }
         } catch (
                 IOException e) {
             e.printStackTrace();
         }
     }
-
-
-
-
-
 
     public static int[] parseStringToIntTable(String s) {
         int[] tmpTable = new int[s.length()];
@@ -143,38 +98,6 @@ public class Main {
         }
         return tmpTable;
     }
-
-
-
-
-
-    public static String stringToReturn(int number, int[] table, int playerId){
-        for (int i = 0; i < table.length; i++) {
-            if (table[i] == number-1)
-                table[i] = playerId;
-        }
-
-        String stringToRetun = "";
-        for (int i = 0; i < table.length; i++) {
-            stringToRetun += table[i];
-        }
-
-        return stringToRetun;
-    }
-
-
-
-
-
-    public static int parseStringToInt(String receivedNumber) {
-
-        return Integer.parseInt(receivedNumber);
-    }
-
-
-
-
-
 
 
     public static void welcomeMessage() {
